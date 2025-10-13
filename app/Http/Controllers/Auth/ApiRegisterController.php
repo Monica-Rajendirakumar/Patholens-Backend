@@ -31,9 +31,15 @@ class ApiRegisterController extends Controller
                 'gender' => ['nullable', 'string', 'in:male,female,other,prefer_not_to_say'],
                 'phone_number' => ['nullable', 'string', 'min:10', 'max:20', 'unique:users,phone_number'],
             ], [
+                'name.required' => 'Name is required.',
                 'name.min' => 'Name must be at least 2 characters.',
+                'email.required' => 'Email is required.',
+                'email.email' => 'Please enter a valid email address.',
+                'email.unique' => 'This email is already registered.',
+                'password.required' => 'Password is required.',
                 'password.min' => 'Password must be at least 8 characters.',
                 'password.confirmed' => 'Password confirmation does not match.',
+                'age.integer' => 'Age must be a valid number.',
                 'age.min' => 'You must be at least 13 years old to register.',
                 'age.max' => 'Please enter a valid age.',
                 'gender.in' => 'Please select a valid gender option.',
@@ -81,7 +87,7 @@ class ApiRegisterController extends Controller
             ], 201);
 
         } catch (ValidationException $e) {
-            // Return validation errors in a clean format
+            // Return validation errors
             return response()->json([
                 'success' => false,
                 'message' => 'Validation failed',
