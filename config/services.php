@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'python' => [
+    'binary' => env('PYTHON_BINARY', 'python'),  // Changed default from 'python3' to 'python'
+],
+
 ];

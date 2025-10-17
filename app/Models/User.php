@@ -43,7 +43,15 @@ class User extends Authenticatable
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
+     * 
+     * 
      */
+
+    public function profileImage()
+    {
+        return $this->hasOne(UserProfileImage::class);
+    }
+
     protected function casts(): array
     {
         return [
