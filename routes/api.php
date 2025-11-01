@@ -7,7 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\ProfileImageController;
 use App\Http\Controllers\GradioController;
-
+use App\Http\Controllers\PatientController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -39,6 +39,14 @@ Route::prefix('v1')->group(function () {
     
     // Image Classification - PUBLIC (no authentication required)
     Route::post('classify-image', [GradioController::class, 'classify']);
+
+    // Patient/Diagnosis routes
+    Route::get('/patients', [PatientController::class, 'index']);
+    Route::post('/patients', [PatientController::class, 'store']);
+    Route::get('/patients/{id}', [PatientController::class, 'show']);
+    Route::put('/patients/{id}', [PatientController::class, 'update']);
+    Route::delete('/patients/{id}', [PatientController::class, 'destroy']);
+    Route::get('/patients/user/{user_id}', [PatientController::class, 'getUserHistory']);
 });
 
 // Protected routes (require authentication)
@@ -51,6 +59,8 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::get('me/image', [ProfileImageController::class, 'show']);
     Route::post('me/image', [ProfileImageController::class, 'upload']);
     Route::delete('me/image', [ProfileImageController::class, 'destroy']);
+
+    
 
     // Logout
     Route::post('logout', [ApiLoginController::class, 'logout']);
