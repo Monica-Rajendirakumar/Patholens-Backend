@@ -8,6 +8,8 @@ use App\Http\Controllers\NewsController;
 use App\Http\Controllers\ProfileImageController;
 use App\Http\Controllers\GradioController;
 use App\Http\Controllers\PatientController;
+use App\Http\Controllers\Auth\PasswordResetController;
+use App\Http\Controllers\Auth\ChangePasswordController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -49,19 +51,29 @@ Route::prefix('v1')->group(function () {
     Route::get('/patients/user/{user_id}', [PatientController::class, 'getUserHistory']);
 });
 
+Route::prefix('password')->group(function () {
+    //reset password
+    Route::post('forgot', [PasswordResetController::class, 'sendOtp']);
+    Route::post('verify-otp', [PasswordResetController::class, 'verifyOtp']);
+    Route::post('reset', [PasswordResetController::class, 'resetPassword']);
+    Route::post('resend-otp', [PasswordResetController::class, 'resendOtp']);
+});
+
+
 // Protected routes (require authentication)
 Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     // User profile
     Route::get('me', [UserController::class, 'getAuthenticatedUser']);
     Route::put('me', [UserController::class, 'updateAuthenticatedUser']);
-    
+
+    Route::post('/auth/change-password', [ChangePasswordController::class, 'changePassword']);
     // Profile image
     Route::get('me/image', [ProfileImageController::class, 'show']);
     Route::post('me/image', [ProfileImageController::class, 'upload']);
     Route::delete('me/image', [ProfileImageController::class, 'destroy']);
-
     
-
     // Logout
     Route::post('logout', [ApiLoginController::class, 'logout']);
 });
+
+

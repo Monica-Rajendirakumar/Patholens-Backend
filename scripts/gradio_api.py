@@ -67,44 +67,35 @@ def classify_image(image_path: str) -> Dict[str, Any]:
     """
     for attempt in range(MAX_RETRIES):
         try:
-            # Validate input
             validate_image_path(image_path)
             
-            # Initialize Gradio client with timeout (suppress output by redirecting)
             client = Client(GRADIO_ENDPOINT)
             
-            # Make prediction with timeout
             result = client.predict(
                 img=handle_file(image_path),
                 api_name=API_NAME
             )
             
-            # Extract classification data (assuming last element contains the result)
             if not result or len(result) == 0:
                 raise ValueError("Empty result from Gradio API")
             
             output = result[-1]
             
-            # Validate output structure
             if not isinstance(output, dict):
                 raise ValueError(f"Unexpected output format: {type(output)}")
             
             if 'label' not in output or 'confidence' not in output:
                 raise ValueError("Missing required fields in API response")
             
-            # Parse confidence value (handle both percentage strings and floats)
             confidence_value = output['confidence']
             if isinstance(confidence_value, str):
-                # Remove '%' sign and convert to float, then divide by 100
                 confidence_value = confidence_value.strip().rstrip('%')
                 confidence = float(confidence_value) / 100.0
             else:
                 confidence = float(confidence_value)
             
-            # Ensure confidence is between 0 and 1
             confidence = max(0.0, min(1.0, confidence))
             
-            # Return structured response
             return {
                 "status": "success",
                 "data": {
@@ -145,7 +136,6 @@ def main():
         image_path = sys.argv[1]
         result = classify_image(image_path)
     
-    # Output ONLY JSON to stdout (no extra text)
     print(json.dumps(result, indent=None), flush=True)
 
 
