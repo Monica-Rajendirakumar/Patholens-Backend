@@ -8,7 +8,6 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-// REMOVED "implements ShouldQueue" - This was causing the issue!
 class OtpMail extends Mailable
 {
     use Queueable, SerializesModels;
@@ -17,7 +16,6 @@ class OtpMail extends Mailable
         public readonly string $otp,
         public readonly int $expiryMinutes = 10
     ) {
-        // Removed onQueue('high') since we're not using queue now
     }
 
     public function envelope(): Envelope

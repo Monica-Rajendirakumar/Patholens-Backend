@@ -7,7 +7,13 @@ use Carbon\Carbon;
 
 class PasswordResetOtp extends Model
 {
-    protected $fillable = ['email', 'otp', 'expires_at', 'is_verified', 'is_used'];
+    protected $fillable = [
+        'email',
+        'otp',
+        'expires_at',
+        'is_verified',
+        'is_used',
+    ];
 
     protected $casts = [
         'expires_at' => 'datetime',
@@ -20,21 +26,18 @@ class PasswordResetOtp extends Model
      */
     public static function generate(string $email): string
     {
-        // Generate 6-digit OTP
         $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-        
-        // Delete old unused OTPs for this email
+
         self::where('email', $email)
             ->where('is_used', false)
             ->delete();
-        
-        // Create new OTP (valid for 10 minutes)
+
         self::create([
             'email' => $email,
             'otp' => $otp,
             'expires_at' => Carbon::now()->addMinutes(10),
         ]);
-        
+
         return $otp;
     }
 

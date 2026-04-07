@@ -20,7 +20,9 @@ class Patient extends Model
         'confidence',
     ];
 
-    // optional: link the user relation
+    /**
+     * Get the user that owns the patient record
+     */
     public function user()
     {
         return $this->belongsTo(User::class);
