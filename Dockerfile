@@ -1,11 +1,26 @@
-Environment Variables
-Set environment-specific config and secrets (such as API keys), then read those values from your code. Learn more.
-NAME_OF_VARIABLE
-value
+FROM php:8.2-cli
 
-Generate
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    unzip \
+    curl \
+    libzip-dev \
+    && docker-php-ext-install zip pdo pdo_mysql
 
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-Add Environment Variable
+# Set working directory
+WORKDIR /app
 
-Add from .env
+# Copy project files
+COPY . .
+
+# Install Laravel dependencies
+RUN composer install --no-dev --optimize-autoloader
+
+# Expose port
+EXPOSE 10000
+
+# Start Laravel server
+CMD php artisan serve --host=0.0.0.0 --port=10000
